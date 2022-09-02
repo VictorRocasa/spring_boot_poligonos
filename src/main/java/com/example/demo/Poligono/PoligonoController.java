@@ -44,4 +44,9 @@ public class PoligonoController {
     public void atualizarPoligono(@PathVariable int idPoligono, @RequestParam(required = false) String lados, @RequestParam(required = false) String tamanho){
         poligonoService.atualizarPoligono(idPoligono, lados, tamanho); 
     }
+
+    @GetMapping(path = "agrupamento")//Listar agrupando poligonos iguais
+	public List<ContadorPoligono> getPoligonosIguais(){
+        return poligonoService.getPoligonosIguais();
+    }
 }

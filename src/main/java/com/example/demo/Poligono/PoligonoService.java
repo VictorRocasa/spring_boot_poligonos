@@ -1,12 +1,13 @@
 package com.example.demo.Poligono;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,6 +47,44 @@ public class PoligonoService {
         if(tamanho!=null && tamanho.length() > 0 && !tamanho.equals(""+poligono.getTamanho())){
             poligono.setTamanho(Float.parseFloat(tamanho));
         }
+    }
+
+    public List<ContadorPoligono> getPoligonosIguais() {
+        List<Poligono> poligonos = poligonoRepository.findAll();
+        if(poligonos.size() == 0)
+            return null;
+        LadosPoligono[] contador = new LadosPoligono[5];
+        for(int i = 0; i < 5; i++)
+            contador[i] = new LadosPoligono();
+        for(Poligono p: poligonos){
+            contador[p.getLados()-3].adicionarTamanho(p.getTamanho());
+        }
+        List<ContadorPoligono> poligonosIguais = new ArrayList<ContadorPoligono>();
+        int k = 0;//iterador poligonosIguais
+        System.out.println("!!!!!!!!!!!!!!!!!!!1");
+        for(int i = 0; i < 5; i++){
+            List<Float> tamanhos = contador[i].getTamanhos();
+            if(tamanhos.size() > 0){//Se existem poligonos de determinada quantidade de lados
+                Collections.sort(tamanhos);
+                int j = 0;
+                System.out.println("!!!!!!!!!!!!!!!!2");
+                while(j < tamanhos.size()){
+                    float tamanhoAtual = tamanhos.get(j);
+                    poligonosIguais.add(new ContadorPoligono(i+3, tamanhoAtual));
+                    int valor = 0;//conta a quantidade de vezes que cada tamanho aparece
+                    do{//garante que tanto o j quanto o valor incrementem no minimo 1 vez
+                        j++;
+                        valor++;
+                        if(j >= tamanhos.size())
+                            break;
+                    }while(tamanhos.get(j) == tamanhoAtual);
+                    System.out.println("!!!!!!!!!!!3");
+                    poligonosIguais.get(k).setOcorrencias(valor);
+                    k++;
+                }
+            }
+        }
+        return poligonosIguais;
     }
 
 }
