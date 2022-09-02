@@ -1,5 +1,6 @@
 package com.example.demo.Poligono;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +21,12 @@ public class PoligonoService {
     }
 
     public void deletarPoligono(int idPoligono) {
+    
+    }
+
+    public void adicionarPoligono(Poligono poligono) {
+        poligono.setDataCriacao(LocalDate.now());
+        poligono.setUltimaModificacao(LocalDate.now());
+        poligonoRepository.save(poligono);
     }
 }
