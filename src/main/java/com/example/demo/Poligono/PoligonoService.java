@@ -20,5 +20,9 @@ public class PoligonoService {
     }
 
     public void deletarPoligono(int idPoligono) {
+        boolean existe = poligonoRepository.existsById(idPoligono);
+        if(!existe)
+            throw new IllegalStateException("Nenhum poligono cadastrado com o id "+idPoligono);
+        poligonoRepository.deleteById(idPoligono);
     }
 }
