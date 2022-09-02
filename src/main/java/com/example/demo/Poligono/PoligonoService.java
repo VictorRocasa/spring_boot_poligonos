@@ -18,4 +18,7 @@ public class PoligonoService {
     public List<Poligono> getPoligonos() {
         return poligonoRepository.findAll();
     }
+
+    public void deletarPoligono(int idPoligono) {
+    }
 }
