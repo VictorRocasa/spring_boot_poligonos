@@ -28,7 +28,7 @@ public class PoligonoController {
         return poligonoService.getPoligonos();
     }
 
-    @DeleteMapping(path = "{idPoligono}")
+    @DeleteMapping(path = "apagar/{idPoligono}")
     public void deletarPoligono(@PathVariable int idPoligono){
         poligonoService.deletarPoligono(idPoligono);
     }
