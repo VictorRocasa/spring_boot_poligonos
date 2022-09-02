@@ -1,5 +1,6 @@
 package com.example.demo.Poligono;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -28,13 +30,18 @@ public class PoligonoController {
         return poligonoService.getPoligonos();
     }
 
-    @DeleteMapping(path = "apagar/{idPoligono}")
+    @PostMapping//Criar
+    public void adicionarPoligono(@RequestBody Poligono poligono){
+        poligonoService.adicionarPoligono(poligono);
+    }
+
+    @DeleteMapping(path = "apagar/{idPoligono}")//Apagar
     public void deletarPoligono(@PathVariable int idPoligono){
         poligonoService.deletarPoligono(idPoligono);
     }
 
-    @PostMapping//Criar
-    public void adicionarPoligono(@RequestBody Poligono poligono){
-        poligonoService.adicionarPoligono(poligono);
+    @PutMapping(path = "editar/{idPoligono}")//Editar
+    public void atualizarPoligono(@PathVariable int idPoligono, @RequestParam(required = false) String lados, @RequestParam(required = false) String tamanho){
+        poligonoService.atualizarPoligono(idPoligono, lados, tamanho); 
     }
 }
