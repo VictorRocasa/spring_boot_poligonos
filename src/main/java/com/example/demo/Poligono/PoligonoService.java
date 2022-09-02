@@ -1,9 +1,11 @@
-package com.example.Poligono;
+package com.example.demo.Poligono;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PoligonoService {
 
     private final PoligonoRepository poligonoRepository;
@@ -14,6 +16,6 @@ public class PoligonoService {
     }
 
     public List<Poligono> getPoligonos() {
-        return null;
+        return poligonoRepository.findAll();
     }
 }

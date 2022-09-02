@@ -1,7 +1,9 @@
-package com.example.Poligono;
+package com.example.demo.Poligono;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface PoligonoRepository extends JpaRepository<Poligono, Integer>{
 
 }

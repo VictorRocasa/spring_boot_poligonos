@@ -1,4 +1,4 @@
-package com.example.Poligono;
+package com.example.demo.Poligono;
 
 import java.time.LocalDate;
 
@@ -22,7 +22,7 @@ public class Poligono {
     @GeneratedValue(
         strategy = GenerationType.SEQUENCE,
         generator = "sequencia_estudante"
-    )   
+    )        
     @Column(name = "id",updatable = false)
     private int id;
     @Column(name = "lados",updatable = true)
