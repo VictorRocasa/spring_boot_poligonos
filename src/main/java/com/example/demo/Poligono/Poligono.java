@@ -7,8 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import com.example.demo.Forma.Forma;
 
 @Entity(name = "Poligono")
 @Table(name = "poligono")
@@ -33,18 +36,23 @@ public class Poligono {
     private LocalDate dataCriacao;
     @Column(name = "ultimaModificacao",updatable = true, columnDefinition = "DATE")
     private LocalDate ultimaModificacao;
+    @ManyToOne
+    private Forma forma;
 
 
     public Poligono() {
     }
 
 
-    public Poligono(int lados, float tamanho, LocalDate dataCriacao, LocalDate ultimaModificacao) {
+    public Poligono(int id, int lados, float tamanho, LocalDate dataCriacao, LocalDate ultimaModificacao, Forma forma) {
+        this.id = id;
         this.lados = lados;
         this.tamanho = tamanho;
         this.dataCriacao = dataCriacao;
         this.ultimaModificacao = ultimaModificacao;
+        this.forma = forma;
     }
+
 
     public int getId() {
         return this.id;
@@ -86,6 +94,15 @@ public class Poligono {
         this.ultimaModificacao = ultimaModificacao;
     }
 
+    public Forma getForma() {
+        return this.forma;
+    }
+
+    public void setForma(Forma forma) {
+        this.forma = forma;
+    }
+
+
     @Override
     public String toString() {
         return "{" +
@@ -94,8 +111,10 @@ public class Poligono {
             ", tamanho='" + getTamanho() + "'" +
             ", dataCriacao='" + getDataCriacao() + "'" +
             ", ultimaModificacao='" + getUltimaModificacao() + "'" +
+            ", forma='" + getForma() + "'" +
             "}";
     }
+    
     
 }
 

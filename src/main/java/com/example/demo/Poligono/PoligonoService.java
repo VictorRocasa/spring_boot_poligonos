@@ -61,13 +61,11 @@ public class PoligonoService {
         }
         List<ContadorPoligono> poligonosIguais = new ArrayList<ContadorPoligono>();
         int k = 0;//iterador poligonosIguais
-        System.out.println("!!!!!!!!!!!!!!!!!!!1");
         for(int i = 0; i < 5; i++){
             List<Float> tamanhos = contador[i].getTamanhos();
             if(tamanhos.size() > 0){//Se existem poligonos de determinada quantidade de lados
                 Collections.sort(tamanhos);
                 int j = 0;
-                System.out.println("!!!!!!!!!!!!!!!!2");
                 while(j < tamanhos.size()){
                     float tamanhoAtual = tamanhos.get(j);
                     poligonosIguais.add(new ContadorPoligono(i+3, tamanhoAtual));
@@ -78,7 +76,6 @@ public class PoligonoService {
                         if(j >= tamanhos.size())
                             break;
                     }while(tamanhos.get(j) == tamanhoAtual);
-                    System.out.println("!!!!!!!!!!!3");
                     poligonosIguais.get(k).setOcorrencias(valor);
                     k++;
                 }
