@@ -3,6 +3,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Forma.Forma;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +50,13 @@ public class PoligonoController {
     @GetMapping(path = "agrupamento")//Listar agrupando poligonos iguais
 	public List<ContadorPoligono> getPoligonosIguais(){
         return poligonoService.getPoligonosIguais();
+    }
+
+    public void verificarEstoque(List<Integer> ids){
+        poligonoService.verificarEstoque(ids);
+    }
+
+    public void insereNaForma(List<Integer> ids, Forma forma){
+        poligonoService.insereNaForma(ids, forma);
     }
 }

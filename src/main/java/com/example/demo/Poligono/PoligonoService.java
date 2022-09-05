@@ -10,6 +10,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.Forma.Forma;
+
 @Service
 public class PoligonoService {
 
@@ -39,10 +41,11 @@ public class PoligonoService {
     
     @Transactional
     public void atualizarPoligono(int idPoligono, String lados, String tamanho) {
-        Poligono poligono = poligonoRepository.findById(idPoligono).orElseThrow(() -> new IllegalStateException("Poligono com o id "+idPoligono+" não existe"));
+        Poligono poligono = poligonoRepository.findById(idPoligono).orElseThrow(()
+         -> new IllegalStateException("Poligono com o id "+idPoligono+" não existe"));
 
         if(lados!=null && lados.length() > 0 && !lados.equals(""+poligono.getLados()))
-            poligono.setLados(Integer.parseInt(lados));;
+            poligono.setLados(Integer.parseInt(lados));
 
         if(tamanho!=null && tamanho.length() > 0 && !tamanho.equals(""+poligono.getTamanho())){
             poligono.setTamanho(Float.parseFloat(tamanho));
@@ -57,7 +60,8 @@ public class PoligonoService {
         for(int i = 0; i < 5; i++)
             contador[i] = new LadosPoligono();
         for(Poligono p: poligonos){
-            contador[p.getLados()-3].adicionarTamanho(p.getTamanho());
+            if(p.getForma()==null)
+                contador[p.getLados()-3].adicionarTamanho(p.getTamanho());
         }
         List<ContadorPoligono> poligonosIguais = new ArrayList<ContadorPoligono>();
         int k = 0;//iterador poligonosIguais
@@ -82,6 +86,23 @@ public class PoligonoService {
             }
         }
         return poligonosIguais;
+    }
+
+    public boolean verificarEstoque(List<Integer> ids){
+        List<Poligono> poligonos = poligonoRepository.findAllById(ids);
+        if(poligonos.size() < ids.size())//verifica se poligonos existem
+            throw new IllegalStateException("No minimo um dos ids enviados não corresponde a um poligono cadastrado");
+        for(Poligono p: poligonos)
+            if(p.getForma()!=null)//verifica se ha estoque dos poligonos selecionados
+                throw new IllegalStateException("Não há estoque do poligono de id "+p.getId());
+        return true;
+    }
+
+    @Transactional
+    public void insereNaForma(List<Integer> ids, Forma forma) {
+        List<Poligono> poligonos = poligonoRepository.findAllById(ids);
+        for(Poligono p: poligonos)
+            p.setForma(forma);
     }
 
 }

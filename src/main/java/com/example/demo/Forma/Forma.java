@@ -32,6 +32,11 @@ public class Forma {
     }
 
 
+    public Forma(Agrupamento agrupamento) {
+        this.agrupamento = agrupamento;
+    }
+
+
     public Forma(int id, Agrupamento agrupamento) {
         this.id = id;
         this.agrupamento = agrupamento;
