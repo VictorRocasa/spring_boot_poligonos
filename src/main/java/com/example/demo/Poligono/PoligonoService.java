@@ -2,7 +2,7 @@ package com.example.demo.Poligono;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -23,7 +23,7 @@ public class PoligonoService {
     }
 
     public List<Poligono> getPoligonos() {
-        return poligonoRepository.findAll();
+        return poligonoRepository.findByOrderByLadosAsc();
     }
 
     public void deletarPoligono(int idPoligono) {
@@ -68,7 +68,7 @@ public class PoligonoService {
         for(int i = 0; i < 5; i++){
             List<Float> tamanhos = contador[i].getTamanhos();
             if(tamanhos.size() > 0){//Se existem poligonos de determinada quantidade de lados
-                Collections.sort(tamanhos);
+                //Collections.sort(tamanhos);
                 int j = 0;
                 while(j < tamanhos.size()){
                     float tamanhoAtual = tamanhos.get(j);
@@ -103,6 +103,13 @@ public class PoligonoService {
         List<Poligono> poligonos = poligonoRepository.findAllById(ids);
         for(Poligono p: poligonos)
             p.setForma(forma);
+    }
+
+    @Transactional
+    public void findPoligonosByForma(Forma forma) {
+        List<Poligono> poligonos = poligonoRepository.findPoligonosByForma(forma);
+        for(Poligono p: poligonos)
+            p.setForma(null);
     }
 
 }

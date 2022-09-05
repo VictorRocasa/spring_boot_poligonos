@@ -25,19 +25,19 @@ public class Forma {
     @Column(name = "id",updatable = false)
     private int id;    
     @ManyToOne
-    private Agrupamento agrupamento;
+    private Forma agrupamento;
 
 
     public Forma() {
     }
 
 
-    public Forma(Agrupamento agrupamento) {
+    public Forma(Forma agrupamento) {
         this.agrupamento = agrupamento;
     }
 
 
-    public Forma(int id, Agrupamento agrupamento) {
+    public Forma(int id, Forma agrupamento) {
         this.id = id;
         this.agrupamento = agrupamento;
     }
@@ -51,11 +51,11 @@ public class Forma {
         this.id = id;
     }
 
-    public Agrupamento getAgrupamento() {
+    public Forma getAgrupamento() {
         return this.agrupamento;
     }
 
-    public void setAgrupamento(Agrupamento agrupamento) {
+    public void setAgrupamento(Forma agrupamento) {
         this.agrupamento = agrupamento;
     }
 

@@ -1,6 +1,9 @@
 package com.example.demo.Forma;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,13 +14,11 @@ import com.example.demo.Poligono.PoligonoController;
 public class FormaService {
 
     private final FormaRepository formaRepository;
-    private final AgrupamentoRepository agrupamentoRepository;
     private final PoligonoController poligonoController;
 
     @Autowired
-    public FormaService(FormaRepository formaRepository, AgrupamentoRepository agrupamentoRepository, PoligonoController poligonoController) {
+    public FormaService(FormaRepository formaRepository, PoligonoController poligonoController) {
         this.formaRepository = formaRepository;
-        this.agrupamentoRepository = agrupamentoRepository;
         this.poligonoController = poligonoController;
     }
 
@@ -26,31 +27,46 @@ public class FormaService {
         return null;
     }
 
+    @Transactional
     public void adicionarForma(FormaConstrutor formaConstrutor) {
         if(formaConstrutor.getPoligonos() == null && formaConstrutor.getFormas() == null)//Ambos vazios = erro
             throw new IllegalStateException("Erro! Selecione poligonos ou formas existentes!");
         if(formaConstrutor.getPoligonos() != null)//Se poligonos nao estiver vazio
-            poligonoController.verificarEstoque(formaConstrutor.getPoligonos());//verifica se poligono existe e esta disponivel
+            poligonoController.verificarEstoque(formaConstrutor.getPoligonos());//verifica se poligonos existem e ha estoque
+        List<Forma> formas = null;
         if(formaConstrutor.getFormas() != null){//se formas nao estiver vazio
-            List<Forma> formas = formaRepository.findAllById(formaConstrutor.getFormas());
-            if(formas.size() < formaConstrutor.getFormas().size())//verifica se existe
+            formas = formaRepository.findAllById(formaConstrutor.getFormas());
+            if(formas.size() < formaConstrutor.getFormas().size())//verifica se todas existem
                 throw new IllegalStateException("No minimo um dos ids enviados não corresponde a uma forma cadastrado");
             for(Forma f: formas)//verifica se ha estoque das formas selecionadas
                 if(f.getAgrupamento()!=null)
                     throw new IllegalStateException("Não há estoque da forma de id "+f.getId());
         }
-        Forma forma;
+        Forma forma = formaRepository.save(new Forma());
         if(formaConstrutor.getFormas() != null){
-            Agrupamento agrupamento = agrupamentoRepository.save(new Agrupamento());
-            forma = formaRepository.save(new Forma(agrupamento));
-        }
-        else
-            forma = formaRepository.save(new Forma());
+            for(Forma f: formas)
+                f.setAgrupamento(forma);
+        }            
+
         if(formaConstrutor.getPoligonos() != null)
             poligonoController.insereNaForma(formaConstrutor.getPoligonos(), forma);  
     }
-
+ 
+    @Transactional
     public void deletarForma(int idForma) {
+        //Se a forma for parte de outra forma o proprio banco barra
+        //Deixar a chave estrangeira de outras formas como null e apagar a forma
+        Optional<Forma> existe = formaRepository.findById(idForma);
+        if(!existe.isPresent())
+            throw new IllegalStateException("Nenhuma forma cadastrada com o id "+idForma);
+        if(existe.get().getAgrupamento()!=null)
+            throw new IllegalStateException("Essa forma compõe outra forma e não pode ser deletada!");
+        List<Forma> agrupamentos = formaRepository.findByAgrupamento(existe.get());
+        poligonoController.findPoligonosByForma(existe.get());
+        for(Forma a: agrupamentos)
+            a.setAgrupamento(null);
+        formaRepository.deleteById(idForma);    
+        //Deixar a chave estrangeira de poligono como null e apagar a forma
     }
 
     public void atualizarForma(int idForma, String lados, String tamanho) {

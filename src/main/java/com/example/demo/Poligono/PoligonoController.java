@@ -59,4 +59,8 @@ public class PoligonoController {
     public void insereNaForma(List<Integer> ids, Forma forma){
         poligonoService.insereNaForma(ids, forma);
     }
+
+    public void findPoligonosByForma(Forma forma) {
+        poligonoService.findPoligonosByForma(forma);
+    }
 }
