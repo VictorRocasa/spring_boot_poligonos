@@ -56,12 +56,16 @@ public class PoligonoController {
         poligonoService.verificarEstoque(ids);
     }
 
+    public void verificarEstoque(List<Integer> ids, Forma forma){
+        poligonoService.verificarEstoque(ids, forma);
+    }
+
     public void insereNaForma(List<Integer> ids, Forma forma){
         poligonoService.insereNaForma(ids, forma);
     }
 
-    public void findPoligonosByForma(Forma forma) {
-        poligonoService.findPoligonosByForma(forma);
+    public void limpaPoligonosDaForma(Forma forma) {
+        poligonoService.limpaPoligonosDaForma(forma);
     }
 
     public List<Poligono> findByForma(Forma forma) {

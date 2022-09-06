@@ -1,6 +1,5 @@
 package com.example.demo.Forma;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -41,7 +40,7 @@ public class FormaController {
     }
 
     @PutMapping(path = "editar/{idForma}")//Editar
-    public void atualizarForma(@PathVariable int idForma, @RequestParam(required = false) String lados, @RequestParam(required = false) String tamanho){
-        formaService.atualizarForma(idForma, lados, tamanho); 
+    public void atualizarForma(@PathVariable int idForma, @RequestBody FormaComposta formaConstrutor){
+        formaService.atualizarForma(idForma, formaConstrutor); 
     }
 }

@@ -88,14 +88,22 @@ public class PoligonoService {
         return poligonosIguais;
     }
 
-    public boolean verificarEstoque(List<Integer> ids){
+    public void verificarEstoque(List<Integer> ids){
         List<Poligono> poligonos = poligonoRepository.findAllById(ids);
         if(poligonos.size() < ids.size())//verifica se poligonos existem
             throw new IllegalStateException("No minimo um dos ids enviados não corresponde a um poligono cadastrado");
         for(Poligono p: poligonos)
             if(p.getForma()!=null)//verifica se ha estoque dos poligonos selecionados
                 throw new IllegalStateException("Não há estoque do poligono de id "+p.getId());
-        return true;
+    }
+
+    public void verificarEstoque(List<Integer> ids, Forma forma){
+        List<Poligono> poligonos = poligonoRepository.findAllById(ids);
+        if(poligonos.size() < ids.size())//verifica se poligonos existem
+            throw new IllegalStateException("No minimo um dos ids enviados não corresponde a um poligono cadastrado");
+        for(Poligono p: poligonos)
+            if(p.getForma()!=null || p.getForma()!=forma)//verifica se ha estoque dos poligonos selecionados
+                throw new IllegalStateException("Não há estoque do poligono de id "+p.getId());
     }
 
     @Transactional
@@ -106,13 +114,12 @@ public class PoligonoService {
     }
 
     @Transactional
-    public void findPoligonosByForma(Forma forma) {
+    public void limpaPoligonosDaForma(Forma forma) {
         List<Poligono> poligonos = poligonoRepository.findPoligonosByForma(forma);
         for(Poligono p: poligonos)
             p.setForma(null);
     }
 
-    @Transactional
     public List<Poligono> findByForma(Forma forma) {
         return poligonoRepository.findByForma(forma);
     }
