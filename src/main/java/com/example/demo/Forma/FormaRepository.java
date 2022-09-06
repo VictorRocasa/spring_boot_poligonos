@@ -10,6 +10,8 @@ public interface FormaRepository  extends JpaRepository<Forma, Integer>{
 
     List<Forma> findByAgrupamento(Forma forma);
 
+    List<Forma> findByOrderByIdAsc();
+
 
 
 }

@@ -26,12 +26,12 @@ public class FormaController {
     }
 
     @GetMapping//Listar
-	public List<Forma> getFormas(){
+	public  List<FormaComposta> getFormas(){
         return formaService.getFormas();
     }
 
     @PostMapping//Criar
-    public void adicionarForma(@RequestBody FormaConstrutor formaConstrutor){
+    public void adicionarForma(@RequestBody FormaComposta formaConstrutor){
         formaService.adicionarForma(formaConstrutor);
     }
 

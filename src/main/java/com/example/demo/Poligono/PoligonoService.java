@@ -112,4 +112,9 @@ public class PoligonoService {
             p.setForma(null);
     }
 
+    @Transactional
+    public List<Poligono> findByForma(Forma forma) {
+        return poligonoRepository.findByForma(forma);
+    }
+
 }

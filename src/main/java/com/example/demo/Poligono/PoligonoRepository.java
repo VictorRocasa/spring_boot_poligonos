@@ -16,4 +16,6 @@ public interface PoligonoRepository extends JpaRepository<Poligono, Integer>{
 
     List<Poligono> findPoligonosByForma(Forma forma);
 
+    List<Poligono> findByForma(Forma forma);
+
 }

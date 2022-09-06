@@ -63,4 +63,8 @@ public class PoligonoController {
     public void findPoligonosByForma(Forma forma) {
         poligonoService.findPoligonosByForma(forma);
     }
+
+    public List<Poligono> findByForma(Forma forma) {
+        return poligonoService.findByForma(forma);
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.Forma;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,7 +9,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.Poligono.Poligono;
 import com.example.demo.Poligono.PoligonoController;
+
 
 @Service
 public class FormaService {
@@ -22,13 +25,33 @@ public class FormaService {
         this.poligonoController = poligonoController;
     }
 
-
-    public List<Forma> getFormas() {
-        return null;
+public List<FormaComposta> getFormas() {
+        List<Forma> formas = formaRepository.findAll();
+        List<FormaComposta> formasCompostas = new ArrayList<FormaComposta>();
+        for(Forma f: formas){
+            FormaComposta forma = new FormaComposta();
+            forma.setId(f.getId());
+            List<Forma> formasCompositoras = formaRepository.findByAgrupamento(f);
+            if(formasCompositoras.size()>0){
+                List<Integer> ids = new ArrayList<Integer>();
+                for(Forma fj: formasCompositoras)
+                    ids.add(fj.getId());
+                forma.setFormas(ids);
+            }
+            List<Poligono> poligonosCompositores = poligonoController.findByForma(f);
+            if(poligonosCompositores.size()>0){
+                List<Integer> ids = new ArrayList<Integer>();
+                for(Poligono p: poligonosCompositores)
+                    ids.add(p.getId());
+                forma.setPoligonos(ids);
+            }
+            formasCompostas.add(forma);
+        }
+        return formasCompostas;
     }
 
     @Transactional
-    public void adicionarForma(FormaConstrutor formaConstrutor) {
+    public void adicionarForma(FormaComposta formaConstrutor) {
         if(formaConstrutor.getPoligonos() == null && formaConstrutor.getFormas() == null)//Ambos vazios = erro
             throw new IllegalStateException("Erro! Selecione poligonos ou formas existentes!");
         if(formaConstrutor.getPoligonos() != null)//Se poligonos nao estiver vazio
