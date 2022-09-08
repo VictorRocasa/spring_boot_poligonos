@@ -6,10 +6,10 @@ public class ContadorPoligono {
     float tamanho;
     int ocorrencias;
 
-
-    public ContadorPoligono(int lados, float tamanho) {
+    public ContadorPoligono(int lados, float tamanho, int ocorrencias) {
         this.lados = lados;
         this.tamanho = tamanho;
+        this.ocorrencias = ocorrencias;
     }
 
     public int getLados() {

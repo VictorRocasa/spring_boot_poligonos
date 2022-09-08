@@ -2,7 +2,7 @@ package com.example.demo.Poligono;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-//import java.util.Collections;
+
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -53,37 +53,10 @@ public class PoligonoService {
     }
 
     public List<ContadorPoligono> getPoligonosIguais() {
-        List<Poligono> poligonos = poligonoRepository.findAll();
-        if(poligonos.size() == 0)
-            return null;
-        LadosPoligono[] contador = new LadosPoligono[5];
-        for(int i = 0; i < 5; i++)
-            contador[i] = new LadosPoligono();
-        for(Poligono p: poligonos){
-            if(p.getForma()==null)
-                contador[p.getLados()-3].adicionarTamanho(p.getTamanho());
-        }
-        List<ContadorPoligono> poligonosIguais = new ArrayList<ContadorPoligono>();
-        int k = 0;//iterador poligonosIguais
-        for(int i = 0; i < 5; i++){
-            List<Float> tamanhos = contador[i].getTamanhos();
-            if(tamanhos.size() > 0){//Se existem poligonos de determinada quantidade de lados
-                //Collections.sort(tamanhos);
-                int j = 0;
-                while(j < tamanhos.size()){
-                    float tamanhoAtual = tamanhos.get(j);
-                    poligonosIguais.add(new ContadorPoligono(i+3, tamanhoAtual));
-                    int valor = 0;//conta a quantidade de vezes que cada tamanho aparece
-                    do{//garante que tanto o j quanto o valor incrementem no minimo 1 vez
-                        j++;
-                        valor++;
-                        if(j >= tamanhos.size())
-                            break;
-                    }while(tamanhos.get(j) == tamanhoAtual);
-                    poligonosIguais.get(k).setOcorrencias(valor);
-                    k++;
-                }
-            }
+        List<Object[]> retorno = poligonoRepository.estoquePoligonos();
+        List<ContadorPoligono> poligonosIguais = new ArrayList<>();
+        for(Object[] r: retorno){
+            poligonosIguais.add(new ContadorPoligono(Integer.parseInt(""+r[0]), Float.parseFloat(""+r[1]), Integer.parseInt(""+r[2])));
         }
         return poligonosIguais;
     }
