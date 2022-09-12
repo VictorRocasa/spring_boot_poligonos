@@ -92,6 +92,7 @@ public List<FormaComposta> getFormas() {
     }
 
     @Transactional
+    @SuppressWarnings({"all "})
     public void atualizarForma(int idForma, FormaComposta formaConstrutor) {
         //Verifica existencia da forma a seredotada
         Optional existe = formaRepository.findById(idForma);

@@ -23,7 +23,7 @@ public class PoligonoService {
     }
 
     public List<Poligono> getPoligonos() {
-        return poligonoRepository.findByOrderByLadosAsc();
+        return poligonoRepository.findByOrderByIdAsc();
     }
 
     public void deletarPoligono(int idPoligono) {
