@@ -114,4 +114,8 @@ public class PoligonoService {
         return poligonoRepository.findByForma(forma);
     }
 
+    public int contaPoligonosNaForma(int id) {
+        return poligonoRepository.contaPoligonosNaForma(id);
+    }
+
 }

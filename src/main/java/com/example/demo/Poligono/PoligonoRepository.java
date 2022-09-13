@@ -23,4 +23,8 @@ public interface PoligonoRepository extends JpaRepository<Poligono, Integer>{
     nativeQuery = true)
     List<Object[]> estoquePoligonos();
 
+    @Query(value = "select count(p) from Poligono p where p.forma_id = ?1", 
+    nativeQuery = true)
+    int contaPoligonosNaForma(int id);
+
 }

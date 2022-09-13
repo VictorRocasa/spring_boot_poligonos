@@ -25,29 +25,44 @@ public class FormaService {
         this.poligonoController = poligonoController;
     }
 
-public List<FormaConstrutor> getFormas() {
+public List<FormaFormatador> getFormas() {
         List<Forma> formas = formaRepository.findAll();
-        List<FormaConstrutor> formasCompostas = new ArrayList<FormaConstrutor>();
+        List<FormaFormatador> JSON = new ArrayList<FormaFormatador>();
         for(Forma f: formas){
-            FormaConstrutor forma = new FormaConstrutor();
-            forma.setId(f.getId());
-            List<Forma> formasCompositoras = formaRepository.findByAgrupamento(f);
-            if(formasCompositoras.size()>0){
-                List<Integer> ids = new ArrayList<Integer>();
-                for(Forma fj: formasCompositoras)
-                    ids.add(fj.getId());
-                forma.setFormas(ids);
+            List<Integer> idsPoligonos;
+            List<String> resumoPoligonos;
+            List<Poligono> poligonos = poligonoController.findByForma(f);
+            if(poligonos.size()>0){
+                idsPoligonos = new ArrayList<Integer>();
+                resumoPoligonos = new ArrayList<String>();
+                for(Poligono p: poligonos){
+                    idsPoligonos.add(p.getId());
+                    resumoPoligonos.add(p.getLados()+" lados de tamanho "+p.getTamanho());
+                }
             }
-            List<Poligono> poligonosCompositores = poligonoController.findByForma(f);
-            if(poligonosCompositores.size()>0){
-                List<Integer> ids = new ArrayList<Integer>();
-                for(Poligono p: poligonosCompositores)
-                    ids.add(p.getId());
-                forma.setPoligonos(ids);
+            else{
+                idsPoligonos = null;
+                resumoPoligonos = null;
             }
-            formasCompostas.add(forma);
+            List<Integer> idsFormas;
+            List<String> resumoFormas;
+            List<Forma> agrupamento = formaRepository.findByAgrupamento(f);
+            if(agrupamento.size()>0){
+                idsFormas = new ArrayList<Integer>();
+                resumoFormas = new ArrayList<String>();
+                for(Forma a: agrupamento){
+                    idsFormas.add(a.getId());
+                    resumoFormas.add(poligonoController.contaPoligonosNaForma(a.getId())+
+                    " poligono(s) e "+formaRepository.contaFormasNoAgrupamentos(a.getId())+" forma(s)");
+                }
+            }
+            else{
+                idsFormas = null;
+                resumoFormas = null;
+            }
+            JSON.add(new FormaFormatador(f.getId(),idsPoligonos,resumoPoligonos,idsFormas,resumoFormas));
         }
-        return formasCompostas;
+        return JSON;
     }
 
     public void verificarEstoque(List<Forma> formas){
@@ -121,7 +136,7 @@ public List<FormaConstrutor> getFormas() {
             throw new IllegalStateException("Nenhuma forma cadastrada com o id "+idForma);
         Forma forma = (Forma) existe.get();              
         if(formasEditor.getNovosPoligonos() == null && formasEditor.getNovasFormas() == null && formasEditor.getPoligonosRemover() == null && formasEditor.getFormasRemover() == null)//Todos vazios = erro
-            throw new IllegalStateException("Erro! Selecione poligonos ou formas existentes!");
+            throw new IllegalStateException("Erro! Sem formas ou poligonos selecionados para adicionar/remover!");
         if(formasEditor.getNovosPoligonos() != null)//Verifica se ha disponibilidade dos novos poligonos a serem adicionados
             poligonoController.verificarEstoque(formasEditor.getNovosPoligonos(), forma);
         if(formasEditor.getPoligonosRemover() != null)//Verifica se existem os poligonos a serem removidos
@@ -158,7 +173,5 @@ public List<FormaConstrutor> getFormas() {
             for(Forma ar: agrupamentosRemover)
                 ar.setAgrupamento(null);
         }
-
     }
-
 }

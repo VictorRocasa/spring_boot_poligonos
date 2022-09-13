@@ -27,7 +27,7 @@ public class FormaController {
     }
 
     @GetMapping//Listar
-	public  List<FormaConstrutor> getFormas(){
+	public  List<FormaFormatador> getFormas(){
         return formaService.getFormas();
     }
 
