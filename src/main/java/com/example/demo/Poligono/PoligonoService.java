@@ -75,8 +75,18 @@ public class PoligonoService {
         if(poligonos.size() < ids.size())//verifica se poligonos existem
             throw new IllegalStateException("No minimo um dos ids enviados não corresponde a um poligono cadastrado");
         for(Poligono p: poligonos)
-            if(p.getForma()!=null || p.getForma()!=forma)//verifica se ha estoque dos poligonos selecionados
-                throw new IllegalStateException("Não há estoque do poligono de id "+p.getId());
+            if(p.getForma()!=null)//verifica se ha estoque dos poligonos selecionados
+                if(p.getForma()!=forma)
+                    throw new IllegalStateException("O poligono de id "+p.getId()+" esta atribuido a outra forma");
+    }
+
+    public void verificarEstoqueRemover(List<Integer> ids, Forma forma){
+        List<Poligono> poligonos = poligonoRepository.findAllById(ids);
+        if(poligonos.size() < ids.size())//verifica se poligonos existem
+            throw new IllegalStateException("No minimo um dos ids enviados para a remocao não corresponde a um poligono cadastrado");
+        for(Poligono p: poligonos)
+            if(p.getForma()!=forma)//verifica se ha estoque dos poligonos selecionados
+                throw new IllegalStateException("O poligono de id "+p.getId()+" nao faz parte da forma selecionada");
     }
 
     @Transactional
@@ -88,7 +98,14 @@ public class PoligonoService {
 
     @Transactional
     public void limpaPoligonosDaForma(Forma forma) {
-        List<Poligono> poligonos = poligonoRepository.findPoligonosByForma(forma);
+        List<Poligono> poligonos = poligonoRepository.findByForma(forma);
+        for(Poligono p: poligonos)
+            p.setForma(null);
+    }
+
+    @Transactional
+    public void limpaPoligonosDaForma(List<Integer> ids) {
+        List<Poligono> poligonos = poligonoRepository.findAllById(ids);
         for(Poligono p: poligonos)
             p.setForma(null);
     }

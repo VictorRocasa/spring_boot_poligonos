@@ -2,16 +2,16 @@ package com.example.demo.Forma;
 
 import java.util.List;
 
-public class FormaComposta {
+public class FormaConstrutor {
     int id;
     List<Integer> idsPoligonos;
     List<Integer> idsFormas;
   
 
-    public FormaComposta() {
+    public FormaConstrutor() {
     }
 
-    public FormaComposta(List<Integer> poligonos, List<Integer> formas) {
+    public FormaConstrutor(List<Integer> poligonos, List<Integer> formas) {
         this.idsPoligonos = poligonos;
         this.idsFormas = formas;
     }

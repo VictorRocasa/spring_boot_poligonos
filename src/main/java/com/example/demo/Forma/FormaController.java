@@ -27,12 +27,12 @@ public class FormaController {
     }
 
     @GetMapping//Listar
-	public  List<FormaComposta> getFormas(){
+	public  List<FormaConstrutor> getFormas(){
         return formaService.getFormas();
     }
 
     @PostMapping//Criar
-    public void adicionarForma(@RequestBody FormaComposta formaConstrutor){
+    public void adicionarForma(@RequestBody FormaConstrutor formaConstrutor){
         formaService.adicionarForma(formaConstrutor);
     }
 
@@ -42,7 +42,7 @@ public class FormaController {
     }
 
     @PutMapping(path = "editar/{idForma}")//Editar
-    public void atualizarForma(@PathVariable int idForma, @RequestBody FormaComposta formaConstrutor){
-        formaService.atualizarForma(idForma, formaConstrutor); 
+    public void atualizarForma(@PathVariable int idForma, @RequestBody FormaEditor formaEditor){
+        formaService.atualizarForma(idForma, formaEditor); 
     }
 }

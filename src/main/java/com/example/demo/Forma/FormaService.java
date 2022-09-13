@@ -25,11 +25,11 @@ public class FormaService {
         this.poligonoController = poligonoController;
     }
 
-public List<FormaComposta> getFormas() {
+public List<FormaConstrutor> getFormas() {
         List<Forma> formas = formaRepository.findAll();
-        List<FormaComposta> formasCompostas = new ArrayList<FormaComposta>();
+        List<FormaConstrutor> formasCompostas = new ArrayList<FormaConstrutor>();
         for(Forma f: formas){
-            FormaComposta forma = new FormaComposta();
+            FormaConstrutor forma = new FormaConstrutor();
             forma.setId(f.getId());
             List<Forma> formasCompositoras = formaRepository.findByAgrupamento(f);
             if(formasCompositoras.size()>0){
@@ -50,8 +50,33 @@ public List<FormaComposta> getFormas() {
         return formasCompostas;
     }
 
+    public void verificarEstoque(List<Forma> formas){
+        for(Forma f: formas)//Verifica se ha estoque das formas selecionadas
+            if(f.getAgrupamento()!=null)
+                throw new IllegalStateException("Não há estoque da forma de id "+f.getId());   
+    }
+
+    public void verificarEstoque(List<Forma> formas, Forma forma){
+        for(Forma f: formas)//Verifica se ha estoque das formas selecionadas
+            if(f.getAgrupamento()!=null)
+                if(f.getAgrupamento()!=forma)
+                    throw new IllegalStateException("Não há estoque da forma de id "+f.getId());   
+    }
+
+    public void verificarEstoqueRemover(List<Forma> formas, Forma forma){
+        for(Forma f: formas)
+            if(f.getAgrupamento()!=forma)//Verifica se ha estoque das formas selecionadas
+                throw new IllegalStateException("A forma de id "+f.getId()+" nao compoe a selecionada");   
+    }
+
     @Transactional
-    public void adicionarForma(FormaComposta formaConstrutor) {
+    public void inserirFormasEmForma(List<Forma> formas, Forma forma){
+        for(Forma f: formas)
+            f.setAgrupamento(forma);
+    }
+
+    @Transactional
+    public void adicionarForma(FormaConstrutor formaConstrutor) {
         if(formaConstrutor.getPoligonos() == null && formaConstrutor.getFormas() == null)//Ambos vazios = erro
             throw new IllegalStateException("Erro! Selecione poligonos ou formas existentes!");
         if(formaConstrutor.getPoligonos() != null)//Se poligonos nao estiver vazio
@@ -61,14 +86,11 @@ public List<FormaComposta> getFormas() {
             formas = formaRepository.findAllById(formaConstrutor.getFormas());
             if(formas.size() < formaConstrutor.getFormas().size())//verifica se todas existem
                 throw new IllegalStateException("No minimo um dos ids enviados não corresponde a uma forma cadastrado");
-            for(Forma f: formas)//verifica se ha estoque das formas selecionadas
-                if(f.getAgrupamento()!=null)
-                    throw new IllegalStateException("Não há estoque da forma de id "+f.getId());
+            verificarEstoque(formas);
         }
         Forma forma = formaRepository.save(new Forma());
         if(formaConstrutor.getFormas() != null){
-            for(Forma f: formas)
-                f.setAgrupamento(forma);
+            inserirFormasEmForma(formas,forma);
         }            
 
         if(formaConstrutor.getPoligonos() != null)
@@ -92,41 +114,49 @@ public List<FormaComposta> getFormas() {
     }
 
     @Transactional
-    @SuppressWarnings({"all "})
-    public void atualizarForma(int idForma, FormaComposta formaConstrutor) {
-        //Verifica existencia da forma a seredotada
-        Optional existe = formaRepository.findById(idForma);
+    public void atualizarForma(int idForma, FormaEditor formasEditor) {
+        //Verifica existencia da forma a ser editada
+        Optional<Forma> existe = formaRepository.findById(idForma);
         if(!existe.isPresent())
             throw new IllegalStateException("Nenhuma forma cadastrada com o id "+idForma);
         Forma forma = (Forma) existe.get();              
-        if(formaConstrutor.getPoligonos() == null && formaConstrutor.getFormas() == null)//Ambos vazios = erro
+        if(formasEditor.getNovosPoligonos() == null && formasEditor.getNovasFormas() == null && formasEditor.getPoligonosRemover() == null && formasEditor.getFormasRemover() == null)//Todos vazios = erro
             throw new IllegalStateException("Erro! Selecione poligonos ou formas existentes!");
-        if(formaConstrutor.getPoligonos() != null)//Se poligonos nao estiver vazio
-            poligonoController.verificarEstoque(formaConstrutor.getPoligonos(), forma);//verifica se poligonos existem e ha disponibilidade
+        if(formasEditor.getNovosPoligonos() != null)//Verifica se ha disponibilidade dos novos poligonos a serem adicionados
+            poligonoController.verificarEstoque(formasEditor.getNovosPoligonos(), forma);
+        if(formasEditor.getPoligonosRemover() != null)//Verifica se existem os poligonos a serem removidos
+            poligonoController.verificarEstoqueRemover(formasEditor.getNovosPoligonos(), forma);
         List<Forma> formas = null;
-        if(formaConstrutor.getFormas() != null){//se formas nao estiver vazio
-            formas = formaRepository.findAllById(formaConstrutor.getFormas());
-            if(formas.size() < formaConstrutor.getFormas().size())//verifica se todas existem
+        if(formasEditor.getNovasFormas() != null){//Verifica se ha disponibilidade das novas formas a serem adicionadas
+            formas = formaRepository.findAllById(formasEditor.getNovasFormas());
+            if(formas.size() < formasEditor.getNovasFormas().size())
                 throw new IllegalStateException("No minimo um dos ids enviados não corresponde a uma forma cadastrado");
-            for(Forma f: formas)//verifica se ha disponibilidade das formas selecionadas
-                if(f.getAgrupamento()!=null || f.getAgrupamento()!=forma)
-                    throw new IllegalStateException("Não há estoque da forma de id "+f.getId());
+            verificarEstoque(formas,forma);
         }
-        if(formaConstrutor.getPoligonos()!=null){
-            //Deixa a chave estrangeira null em todos os poligonos que a compoe como null
-            poligonoController.limpaPoligonosDaForma(forma);
-            //Aponta as novas chaves
-            poligonoController.insereNaForma(formaConstrutor.getPoligonos(), forma);
-
+        List<Forma> agrupamentosRemover = null;
+        if(formasEditor.getFormasRemover() != null){
+            agrupamentosRemover = formaRepository.findAllById(formasEditor.getFormasRemover());
+            if(agrupamentosRemover.size() < formasEditor.getFormasRemover().size())
+                throw new IllegalStateException("No minimo um dos ids enviados não corresponde a uma forma cadastrado");
+            verificarEstoqueRemover(agrupamentosRemover,forma);
         }
-        if(formaConstrutor.getFormas()!=null){
-            //Deixa a chave estrangeira em todas as formas que a compoe como null
-            List<Forma> agrupamentos = formaRepository.findByAgrupamento(forma);
-            for(Forma a: agrupamentos)
-                a.setAgrupamento(null);
-            //Aponta as novas chaves
+        if(formasEditor.getNovosPoligonos()!=null){
+            //Insere os novos poligonos na forma
+            poligonoController.insereNaForma(formasEditor.getNovosPoligonos(), forma);
+        }
+        if(formasEditor.getPoligonosRemover()!=null){
+            //Remove os poligonos a serem removidos
+            poligonoController.limpaPoligonosDaForma(formasEditor.getPoligonosRemover());
+        }
+        if(formasEditor.getNovasFormas()!=null){
+            //Agrupa as novas formas
             for(Forma f:formas)
                 f.setAgrupamento(forma);
+        }
+        if(formasEditor.getFormasRemover()!=null){
+            //Remove todas as formas a serem removidas
+            for(Forma ar: agrupamentosRemover)
+                ar.setAgrupamento(null);
         }
 
     }
