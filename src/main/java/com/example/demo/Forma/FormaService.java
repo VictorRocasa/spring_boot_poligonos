@@ -29,36 +29,20 @@ public List<FormaFormatador> getFormas() {
         List<Forma> formas = formaRepository.findAll();
         List<FormaFormatador> JSON = new ArrayList<FormaFormatador>();
         for(Forma f: formas){
-            List<Integer> idsPoligonos;
-            List<String> resumoPoligonos;
+            List<Integer> idsPoligonos = new ArrayList<Integer>();
+            List<String> resumoPoligonos = new ArrayList<String>();
             List<Poligono> poligonos = poligonoController.findByForma(f);
-            if(poligonos.size()>0){
-                idsPoligonos = new ArrayList<Integer>();
-                resumoPoligonos = new ArrayList<String>();
-                for(Poligono p: poligonos){
-                    idsPoligonos.add(p.getId());
-                    resumoPoligonos.add(p.getLados()+" lados de tamanho "+p.getTamanho());
-                }
+            for(Poligono p: poligonos){
+                idsPoligonos.add(p.getId());
+                resumoPoligonos.add(p.getLados()+" lados de tamanho "+p.getTamanho());
             }
-            else{
-                idsPoligonos = null;
-                resumoPoligonos = null;
-            }
-            List<Integer> idsFormas;
-            List<String> resumoFormas;
+            List<Integer> idsFormas = new ArrayList<Integer>();
+            List<String> resumoFormas = new ArrayList<String>();
             List<Forma> agrupamento = formaRepository.findByAgrupamento(f);
-            if(agrupamento.size()>0){
-                idsFormas = new ArrayList<Integer>();
-                resumoFormas = new ArrayList<String>();
-                for(Forma a: agrupamento){
-                    idsFormas.add(a.getId());
-                    resumoFormas.add(poligonoController.contaPoligonosNaForma(a.getId())+
-                    " poligono(s) e "+formaRepository.contaFormasNoAgrupamentos(a.getId())+" forma(s)");
-                }
-            }
-            else{
-                idsFormas = null;
-                resumoFormas = null;
+            for(Forma a: agrupamento){
+                idsFormas.add(a.getId());
+                resumoFormas.add(poligonoController.contaPoligonosNaForma(a.getId())+
+                " poligono(s) e "+formaRepository.contaFormasNoAgrupamentos(a.getId())+" forma(s)");
             }
             JSON.add(new FormaFormatador(f.getId(),idsPoligonos,resumoPoligonos,idsFormas,resumoFormas));
         }
