@@ -2,22 +2,20 @@ package com.example.demo.Forma;
 
 import java.util.List;
 
+import com.example.demo.Poligono.Poligono;
+
 public class FormaFormatador {
     int id;
-    List<Integer> idsPoligonos;
-    List<String> resumoPoligonos;
-    List<Integer> idsFormas;
-    List<String> resumoFormas;
+    List<Poligono> poligonos;
+    List<Forma> formas;
 
     public FormaFormatador() {
     }
 
-    public FormaFormatador(int id, List<Integer> idsPoligonos, List<String> resumoPoligonos, List<Integer> idsFormas, List<String> resumoFormas) {
+    public FormaFormatador(int id, List<Poligono> poligonos, List<Forma> formas) {
         this.id = id;
-        this.idsPoligonos = idsPoligonos;
-        this.resumoPoligonos = resumoPoligonos;
-        this.idsFormas = idsFormas;
-        this.resumoFormas = resumoFormas;
+        this.poligonos = poligonos;
+        this.formas = formas;
     }
 
     public int getId() {
@@ -28,46 +26,28 @@ public class FormaFormatador {
         this.id = id;
     }
 
-    public List<Integer> getIdsPoligonos() {
-        return this.idsPoligonos;
+    public List<Poligono> getPoligonos() {
+        return this.poligonos;
     }
 
-    public void setIdsPoligonos(List<Integer> idsPoligonos) {
-        this.idsPoligonos = idsPoligonos;
+    public void setPoligonos(List<Poligono> poligonos) {
+        this.poligonos = poligonos;
     }
 
-    public List<String> getResumoPoligonos() {
-        return this.resumoPoligonos;
+    public List<Forma> getFormas() {
+        return this.formas;
     }
 
-    public void setResumoPoligonos(List<String> resumoPoligonos) {
-        this.resumoPoligonos = resumoPoligonos;
-    }
-
-    public List<Integer> getIdsFormas() {
-        return this.idsFormas;
-    }
-
-    public void setIdsFormas(List<Integer> idsFormas) {
-        this.idsFormas = idsFormas;
-    }
-
-    public List<String> getResumoFormas() {
-        return this.resumoFormas;
-    }
-
-    public void setResumoFormas(List<String> resumoFormas) {
-        this.resumoFormas = resumoFormas;
+    public void setFormas(List<Forma> formas) {
+        this.formas = formas;
     }
 
     @Override
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
-            ", idsPoligonos='" + getIdsPoligonos() + "'" +
-            ", resumoPoligonos='" + getResumoPoligonos() + "'" +
-            ", idsFormas='" + getIdsFormas() + "'" +
-            ", resumoFormas='" + getResumoFormas() + "'" +
+            ", poligonos='" + getPoligonos() + "'" +
+            ", formas='" + getFormas() + "'" +
             "}";
     }
 

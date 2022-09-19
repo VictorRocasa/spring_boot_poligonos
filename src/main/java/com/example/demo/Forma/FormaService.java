@@ -29,22 +29,9 @@ public List<FormaFormatador> getFormas() {
         List<Forma> formas = formaRepository.findAll();
         List<FormaFormatador> JSON = new ArrayList<FormaFormatador>();
         for(Forma f: formas){
-            List<Integer> idsPoligonos = new ArrayList<Integer>();
-            List<String> resumoPoligonos = new ArrayList<String>();
             List<Poligono> poligonos = poligonoController.findByForma(f);
-            for(Poligono p: poligonos){
-                idsPoligonos.add(p.getId());
-                resumoPoligonos.add(p.getLados()+" lados de tamanho "+p.getTamanho());
-            }
-            List<Integer> idsFormas = new ArrayList<Integer>();
-            List<String> resumoFormas = new ArrayList<String>();
             List<Forma> agrupamento = formaRepository.findByAgrupamento(f);
-            for(Forma a: agrupamento){
-                idsFormas.add(a.getId());
-                resumoFormas.add(poligonoController.contaPoligonosNaForma(a.getId())+
-                " poligono(s) e "+formaRepository.contaFormasNoAgrupamentos(a.getId())+" forma(s)");
-            }
-            JSON.add(new FormaFormatador(f.getId(),idsPoligonos,resumoPoligonos,idsFormas,resumoFormas));
+            JSON.add(new FormaFormatador(f.getId(),poligonos,agrupamento));
         }
         return JSON;
     }
