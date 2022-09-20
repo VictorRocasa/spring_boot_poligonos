@@ -61,6 +61,18 @@ public List<FormaFormatador> getFormas() {
         return JSON;
     }
 
+    public List<FormaFormatador> listarEstoque() {
+            List<Forma> formas = formaRepository.findByAgrupamento(null);
+            List<FormaFormatador> JSON = new ArrayList<FormaFormatador>();
+            for(Forma f: formas){
+                List<Poligono> poligonos = poligonoController.findByForma(f);
+                List<Forma> agrupamento = formaRepository.findByAgrupamento(f);
+                List<String> resumos = resumeFormas(agrupamento);
+                JSON.add(new FormaFormatador(f.getId(),poligonos,resumos));
+            }
+            return JSON;
+        }
+
     public FormaFormatador getForma(int idForma){
         Optional<Forma> f =  formaRepository.findById(idForma);
         if(!f.isPresent())

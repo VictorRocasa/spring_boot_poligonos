@@ -36,6 +36,11 @@ public class FormaController {
         return formaService.getFormas();
     }
 
+    @GetMapping(path = "agrupamento")//Listar
+	public  List<FormaFormatador> listarEstoque(){
+        return formaService.listarEstoque();
+    }
+
     @PostMapping//Criar
     public void adicionarForma(@RequestBody FormaConstrutor formaConstrutor){
         formaService.adicionarForma(formaConstrutor);
