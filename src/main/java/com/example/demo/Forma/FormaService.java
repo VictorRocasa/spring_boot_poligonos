@@ -25,35 +25,48 @@ public class FormaService {
         this.poligonoController = poligonoController;
     }
 
+private ArrayList<String> resumeFormas(List<Forma> agrupamento){
+    ArrayList<String> resumos = new ArrayList<String>();
+    for(Forma a:agrupamento){        
+        int poligonosNaForma = poligonoController.contaPoligonosNaForma(a.getId());
+        int formasNaForma = this.formaRepository.contaFormasNoAgrupamentos(a.getId());    
+        String resultado = "";
+        if(poligonosNaForma == 0)
+            resultado+="0 poligonos ";
+        else if(poligonosNaForma == 1)
+            resultado+="1 poligono ";
+        else if(poligonosNaForma > 1)
+            resultado+=poligonosNaForma+" poligonos ";
+        resultado+="e ";
+        if(formasNaForma == 0)
+            resultado+="0 formas";
+        else if(formasNaForma == 1)
+            resultado+="1 forma";
+        else if(formasNaForma > 1)
+            resultado+=formasNaForma +" formas ";
+        resumos.add(resultado);
+    }
+    return resumos;
+}
+
 public List<FormaFormatador> getFormas() {
         List<Forma> formas = formaRepository.findAll();
         List<FormaFormatador> JSON = new ArrayList<FormaFormatador>();
         for(Forma f: formas){
             List<Poligono> poligonos = poligonoController.findByForma(f);
             List<Forma> agrupamento = formaRepository.findByAgrupamento(f);
-            List<String> resumos = new ArrayList<String>();
-            for(Forma a:agrupamento){
-                int poligonosNaForma = poligonoController.contaPoligonosNaForma(a.getId());
-                int formasNaForma = this.formaRepository.contaFormasNoAgrupamentos(a.getId());    
-                String resultado = "";
-                if(poligonosNaForma == 0)
-                    resultado+="0 poligonos ";
-                else if(poligonosNaForma == 1)
-                    resultado+="1 poligono ";
-                else if(poligonosNaForma > 1)
-                    resultado+=poligonosNaForma+" poligonos ";
-                resultado+="e ";
-                if(formasNaForma == 0)
-                    resultado+="0 formas";
-                else if(formasNaForma == 1)
-                    resultado+="1 forma";
-                else if(formasNaForma > 1)
-                    resultado+=formasNaForma +" formas ";
-                resumos.add(resultado);
-            }
+            List<String> resumos = resumeFormas(agrupamento);
             JSON.add(new FormaFormatador(f.getId(),poligonos,resumos));
         }
         return JSON;
+    }
+
+    public FormaFormatador getForma(int idForma){
+        Optional<Forma> f =  formaRepository.findById(idForma);
+        if(!f.isPresent())
+            throw new IllegalStateException("A forma de id "+idForma+" não existe!");   
+        List<Forma> agrupamento = formaRepository.findByAgrupamento(f.get());
+        return new FormaFormatador(idForma, poligonoController.findByForma(f.get()), agrupamento, resumeFormas(agrupamento));
     }
 
     public void verificarEstoque(List<Forma> formas){

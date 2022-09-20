@@ -7,6 +7,7 @@ import com.example.demo.Poligono.Poligono;
 public class FormaFormatador {
     int id;
     List<Poligono> poligonos;
+    List<Forma> formas;
     List<String> resumoFormas;
 
     public FormaFormatador() {
@@ -15,6 +16,13 @@ public class FormaFormatador {
     public FormaFormatador(int id, List<Poligono> poligonos, List<String> resumoFormas) {
         this.id = id;
         this.poligonos = poligonos;
+        this.resumoFormas = resumoFormas;
+    }
+
+    public FormaFormatador(int id, List<Poligono> poligonos, List<Forma> formas, List<String> resumoFormas) {
+        this.id = id;
+        this.poligonos = poligonos;
+        this.formas = formas;
         this.resumoFormas = resumoFormas;
     }
 
@@ -34,6 +42,14 @@ public class FormaFormatador {
         this.poligonos = poligonos;
     }
 
+    public List<Forma> getFormas() {
+        return this.formas;
+    }
+
+    public void setFormas(List<Forma> formas) {
+        this.formas = formas;
+    }
+
     public List<String> getResumoFormas() {
         return this.resumoFormas;
     }
@@ -47,9 +63,9 @@ public class FormaFormatador {
         return "{" +
             " id='" + getId() + "'" +
             ", poligonos='" + getPoligonos() + "'" +
+            ", formas='" + getFormas() + "'" +
             ", resumoFormas='" + getResumoFormas() + "'" +
             "}";
     }
-
 }
 

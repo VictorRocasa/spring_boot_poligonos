@@ -26,6 +26,11 @@ public class FormaController {
         this.formaService = formaService;
     }
 
+    @GetMapping(path = "{idForma}")//Retornar forma por id
+	public  FormaFormatador getForma(@PathVariable int idForma){
+        return formaService.getForma(idForma);
+    }
+
     @GetMapping//Listar
 	public  List<FormaFormatador> getFormas(){
         return formaService.getFormas();
